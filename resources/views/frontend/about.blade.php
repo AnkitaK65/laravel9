@@ -1,4 +1,4 @@
-@extends('home.layouts.default')
+@extends('frontend.layouts.default')
 
 @section('content')
   <main id="main">
@@ -130,7 +130,7 @@
             <div class="swiper-slide">
               <div class="testimonial-wrap">
                 <div class="testimonial-item">
-                  <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}" class="testimonial-img" alt="">
                   <h3>Matt Brandon</h3>
                   <h4>Freelancer</h4>
                   <p>

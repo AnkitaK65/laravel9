@@ -13,16 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('default_welcome', function () {
     return view('default_welcome');
 });
 //frontend
 Route::get('/', function () {
-    return view('home.welcome');
+    return view('frontend.welcome');
 });
 
 Route::get('/about', function () {
-    return view('home.about');
+    return view('frontend.about');
+});
+
+Route::get('/coffee', function () {
+    return view('business.home');
 });
 
 //Backend

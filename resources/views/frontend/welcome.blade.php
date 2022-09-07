@@ -1,4 +1,4 @@
-@extends('home.layouts.default')
+@extends('frontend.layouts.default')
 
 @section('content')
   <!-- ======= Hero Section ======= -->

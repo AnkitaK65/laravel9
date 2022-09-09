@@ -26,6 +26,26 @@ Route::get('/about', function () {
     return view('frontend.about');
 });
 
+Route::get('/login', function () {
+    return view('frontend.login');
+});
+
+Route::get('/register', function () {
+    return view('frontend.register');
+});
+
+Route::post('/register', function () {
+    return view('backend.dashboard');
+})->name('register');
+
+Route::get('/login', function () {
+    return view('frontend.login');
+});
+
+Route::post('/login', function () {
+    return view('backend.dashboard');
+})->name('login');
+
 Route::get('/coffee', function () {
     return view('business.home');
 });

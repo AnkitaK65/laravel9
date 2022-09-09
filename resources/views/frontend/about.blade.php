@@ -165,4 +165,4 @@
     </section><!-- End Testimonials Section -->
 
   </main><!-- End #main -->
-  @stop
+  @endsection

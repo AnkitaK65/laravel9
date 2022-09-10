@@ -22,35 +22,61 @@ Route::get('/', function () {
     return view('frontend.welcome');
 });
 
-Route::get('/about', function () {
+Route::get('about', function () {
     return view('frontend.about');
 });
 
-Route::get('/login', function () {
-    return view('frontend.login');
+Route::get('login', function () {
+    return view('auth.login');
 });
 
-Route::get('/register', function () {
-    return view('frontend.register');
+Route::get('register', function () {
+    return view('auth.register');
 });
 
-Route::post('/register', function () {
-    return view('backend.dashboard');
-})->name('register');
-
-Route::get('/login', function () {
-    return view('frontend.login');
+Route::get('password/confirm', function () {
+    return view('auth.passwords.confirm');
 });
 
-Route::post('/login', function () {
-    return view('backend.dashboard');
-})->name('login');
+Route::get('password/email', function () {
+    return view('auth.passwords.email');
+});
 
-Route::get('/coffee', function () {
+Route::get('password/reset', function () {
+    return view('auth.passwords.reset');
+});
+
+Route::get('verify', function () {
+    return view('auth.verify');
+});
+Route::get('coffee', function () {
     return view('business.home');
 });
 
+Route::post('register_user', function () {
+    return "registered";
+});
+
+Route::post('login_user', function () {
+    return "logged in User";
+});
+
+Route::post('password_confirm', function () {
+    return "Password Confirmed";
+});
+
+Route::post('password_email', function () {
+    return "Email Sent";
+});
+
+Route::post('password_update', function () {
+    return "Password Reset";
+});
+
+Route::post('email_verify', function () {
+    return "Verification Resend";
+});
 //Backend
-Route::get('/dashboard', function () {
+Route::get('dashboard', function () {
     return view('backend.dashboard');
 });

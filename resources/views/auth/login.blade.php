@@ -45,7 +45,7 @@
                                         <button type="submit" class="get-started-btn">
                                             {{ __('Login') }}
                                         </button>
-                                        <a class="btn btn-link" href="{{ url('password/email') }}">
+                                        <a class="btn btn-link" href="{{ url('forgot_password') }}">
                                             {{ __('Forgot Your Password?') }}
                                         </a>
                                     </div>

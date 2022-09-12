@@ -22,7 +22,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ url('password_email') }}">
+                    <form method="POST" action="{{ url('password_reset_email') }}">
                         @csrf
 
                         <div class="row mb-3">

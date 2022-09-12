@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Hash;
-use Session;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
@@ -16,7 +13,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function loginUser()
+    public function loginUser(Request $request)
     {
         return "logged in User";
     }
@@ -26,9 +23,22 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function registerUser()
+    public function registerUser(Request $request)
     {
-        return "registered";
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'mobile' => ['numeric', 'digits:10'],
+            'address' => 'required',
+        ]);
+        $data = $request->all();
+        $check = $this->createUser($data);
+        if ($check) {
+            return redirect("dashboard")->withSuccess('Great! You have Successfully loggedin');
+        } else {
+            return redirect("login")->withFaliure('Something went wrong');
+        }
     }
 
     public function verify()
@@ -69,5 +79,16 @@ class AuthController extends Controller
     public function passwordUpdate()
     {
         return "Password Reset";
+    }
+
+    public function createUser($data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'mobile' => $data['mobile'],
+            'address' => $data['address'],
+        ]);
     }
 }

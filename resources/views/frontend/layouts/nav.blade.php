@@ -12,6 +12,7 @@
                   <li><a href="/about">About</a></li>
                   <li><a href="/login">Login</a></li>
                   <li><a href="#">Contact Us</a></li>
+                  <li><a href="/courses">Courses</a></li>
               </ul>
               <i class="bi bi-list mobile-nav-toggle"></i>
           </nav><!-- .navbar -->

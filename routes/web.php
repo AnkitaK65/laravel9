@@ -26,6 +26,10 @@ Route::get('about', function () {
     return view('frontend.about');
 });
 
+Route::get('courses', function () {
+    return view('frontend.courses');
+});
+
 Route::get('login', function () {
     return view('auth.login');
 });

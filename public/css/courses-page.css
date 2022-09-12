@@ -1,0 +1,36 @@
+    * {
+	box-sizing: border-box;
+	font-family: Arial;
+}
+
+img{
+	max-width: 100%;
+	height: auto;
+}
+
+.flex{
+	display: flex;
+}
+
+.flex-item{
+	flex-grow: 1;
+	margin: 10px;
+	position: relative;
+	cursor: pointer;
+}
+
+.flex-item:hover .title{
+	display: block;
+}
+
+.title{
+	position: absolute;
+	bottom: 4px;
+	left: 0;
+	padding: 16px;
+	color: white;
+	width: 100%;
+	background-image: linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,0));
+	display: none;	
+	margin: 0;
+}

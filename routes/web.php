@@ -56,7 +56,7 @@ Route::get('coffee', function () {
 //     return view('auth.verify');
 // });
 
-// Route::post('email_verify', function () {
+// Route::post('verify_resend', function () {
 //     return "Verification Resend";
 // });
 

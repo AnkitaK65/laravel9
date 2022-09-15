@@ -14,3 +14,10 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+.DS_Store
+.DS_Store
+app/.DS_Store
+storage/.DS_Store
+.gitignore
+storage/framework/.DS_Store
+storage/.DS_Store

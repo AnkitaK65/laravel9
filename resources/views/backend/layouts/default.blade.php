@@ -4,6 +4,8 @@
 
 @include('backend.layouts.sidebar')
 
+@include('message.flash-message')
+
 @yield('content')
 
 @include('backend.layouts.footer')

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 
 
 class AuthController extends Controller
@@ -13,9 +15,27 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    /**
+     * Handle an authentication attempt.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function loginUser(Request $request)
     {
-        return "logged in User";
+        $credentials = $request->validate([
+            'email' => ['required', 'email', 'exists:users'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('dashboard');
+        }
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     public function register()
@@ -35,10 +55,14 @@ class AuthController extends Controller
         ]);
         $data = $request->all();
         $check = $this->createUser($data);
+        // echo "<pre>";
+        // print_r($check);
+        // exit;
         if ($check) {
-            return redirect("dashboard")->withSuccess('Great! You have Successfully loggedin');
+            event(new Registered($check));
+            return redirect()->route('verification.notice')->withSuccess('Successfully Registered.');
         } else {
-            return redirect("login")->withFaliure('Something went wrong');
+            return redirect("login")->withFailure('Something went wrong');
         }
     }
 

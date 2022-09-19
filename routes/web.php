@@ -17,6 +17,14 @@ Route::get('/', function () {
     return view('frontend.welcome');
 });
 
+Route::get('/about', function () {
+    return view('frontend.about');
+});
+
+Route::get('/courses', function () {
+    return view('frontend.courses');
+});
+
 Route::get('/dashboard', function () {
     return view('backend.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,10 @@ Route::get('/', function () {
     return view('frontend.welcome');
 });
 
+// Route::get('/', function () {
+//     return view('business.home');
+// });
+
 Route::get('/about', function () {
     return view('frontend.about');
 });
@@ -30,3 +36,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+Route::resource('users', UserController::class)->middleware(['auth']);
+
+Route::resource('courses', CourseController::class);

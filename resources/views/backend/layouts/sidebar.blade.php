@@ -11,7 +11,7 @@
             </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="">
+                <a class="nav-link collapsed" href="{{url('users/'.Auth::user()->id)}}">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>

@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use DataTables;
+use Yajra\DataTables\DataTables;
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -19,18 +24,17 @@ class UserController extends Controller
 
             $data = User::latest()->get();
 
-            return Datatables::of($data)
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('image', function ($row) {
-                    $url= asset('images/users/'.$row->image);
-                    return '<img src="'.$url.'" border="0" width="40" class="img-rounded" align="center" />';
+                    $url = asset('images/users/' . $row->image);
+                    return '<img src="' . $url . '" border="0" width="40" class="img-rounded" align="center" />';
                 })
                 ->addColumn('action', function ($row) {
 
-                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
-
+                    $btn = '<a href="' . route('users.edit', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
                     $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
-                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="View" class="btn btn-info btn-sm viewUser">View</a>';
+                    $btn = $btn . ' <a href="' . route('users.show', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="View" class="btn btn-info btn-sm viewUser">View</a>';
                     return $btn;
                 })
                 ->rawColumns(['image', 'action'])
@@ -58,10 +62,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::updateOrCreate(
-            [
-                'id' => $request->user_id
-            ],
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'mobile' => ['nullable', 'numeric', 'digits:10'],
+        ]);
+
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+            $file = $request->file('image');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('images/users'), $filename);
+        } else {
+            $filename = 'user.png';
+        }
+        $user = User::Create(
             [
                 'name' => $request->name,
                 'email' => $request->email,
@@ -70,10 +88,11 @@ class UserController extends Controller
                 'mobile'  => $request->mobile,
                 'address'  => $request->address,
                 'gender'  => $request->gender,
-                'image'  => 'user.png'
+                'image'  => $filename
             ]
         );
         if ($user) {
+            event(new Registered($user));
             return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
         }
         return response()->json(['status' => 'failed', 'message' => 'Failed! User Details not saved.']);
@@ -85,9 +104,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -96,10 +115,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::find($id);
-        return response()->json($user);
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -111,7 +129,42 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //dd($request->all());
+        $user = User::find($id);
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', Rule::unique('users', 'email')->ignore($user)],
+            'mobile' => ['nullable', 'numeric', 'digits:10'],
+        ]);
+
+        $user = User::find($id);
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+            $file = $request->file('image');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('images/users'), $filename);
+            $user->image = $filename;
+            // $path = $request->file('image')->store('images/users');
+            // $user->image = $path;
+        }
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->mobile = $request->mobile;
+        $user->user_type = $request->user_type;
+        $user->gender = $request->gender;
+        $user->address = $request->address;
+        $user->save();
+
+        if (Auth::user()->user_type == 'admin') {
+            return redirect()->route('users.index', $user)
+                ->with('success', 'User updated successfully');
+        } else {
+            return redirect()->route('users.show', $user)
+                ->with('success', 'User updated successfully');
+        }
     }
 
     /**

@@ -49,6 +49,9 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="modelHeading"></h4>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         <div class="modal-body">
                             <form id="userForm" name="userForm" class="form-horizontal" enctype="multipart/form-data">
@@ -110,7 +113,7 @@
                                         <div class="form-group">
                                             <label for="mobile" class="col-sm-2 control-label">Mobile</label>
                                             <div class="col-sm-12">
-                                                <input id="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}" required autocomplete="mobile" autofocus>
+                                                <input id="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}" autocomplete="mobile" autofocus>
                                                 @error('mobile')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -136,7 +139,7 @@
                                             <label for="gender" class="col-sm-8 control-label">Gender</label>
                                             <div class="col-sm-12">
                                                 <select id="gender" name="gender" class="form-select">
-                                                    <option selected>--select--</option>
+                                                    <option selected value="">--select--</option>
                                                     <option value="male">Male</option>
                                                     <option value="female">Female</option>
                                                 </select>
@@ -177,7 +180,7 @@
                         <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
                             </button>
-                            <button type="button" class="btn btn-success" id="btnCloseIt" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success" id="btnCloseIt" data-bs-dismiss="modal">Close</button>
                         </div>
                         </form>
                     </div>
@@ -306,28 +309,6 @@
 
         /*------------------------------------------
         --------------------------------------------
-        Click to Edit Button
-        --------------------------------------------
-        --------------------------------------------*/
-        $('body').on('click', '.editUser', function() {
-            var user_id = $(this).data('id');
-            $.get("{{ route('users.index') }}" + '/' + user_id + '/edit', function(data) {
-                $('#modelHeading').html("Edit User");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal('show');
-                $('#user_id').val(data.id);
-                $('#name').val(data.name);
-                $('#email').val(data.email);
-                $('#user_type').val(data.user_type);
-                $('#mobile').val(data.mobile);
-                $('#address').val(data.address);
-                $('#gender').val(data.gender);
-                $('#image').val(data.image);
-            })
-        });
-
-        /*------------------------------------------
-        --------------------------------------------
         Create New User
         --------------------------------------------
         --------------------------------------------*/
@@ -345,13 +326,14 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-
+                    toastr.success(data, 'Deleted');
                     $('#userForm').trigger("reset");
                     $('#ajaxModel').modal('hide');
                     table.draw();
 
                 },
                 error: function(data) {
+                    toastr.error(data);
                     console.log('Error:', data);
                     $('#saveBtn').html('Save Changes');
                 }
@@ -364,22 +346,22 @@
         --------------------------------------------
         --------------------------------------------*/
         $('body').on('click', '.deleteUser', function() {
-
             var user_id = $(this).data("id");
-            confirm("Are you sure, you want to delete the user!");
-
-            $.ajax({
-                type: "DELETE",
-                url: "{{ route('users.store') }}" + '/' + user_id,
-                success: function(data) {
-                    toastr.success(data.message, 'Deleted');
-                    table.draw();
-                },
-                error: function(data) {
-                    toastr.error('Something went wrong');
-                    console.log('Error:', data);
-                }
-            });
+            if (confirm("Are you sure, you want to delete the user!")) {
+                alert("hello");
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ route('users.store') }}" + '/' + user_id,
+                    success: function(data) {
+                        toastr.success(data.message, 'Deleted');
+                        table.draw();
+                    },
+                    error: function(data) {
+                        toastr.error('Something went wrong');
+                        console.log('Error:', data);
+                    }
+                });
+            }
         });
 
     });

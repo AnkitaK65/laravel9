@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 @stop
 
 @section('content')
@@ -113,7 +112,7 @@
                                         <div class="form-group">
                                             <label for="mobile" class="col-sm-2 control-label">Mobile</label>
                                             <div class="col-sm-12">
-                                                <input id="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}" autocomplete="mobile" autofocus>
+                                                <input id="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}">
                                                 @error('mobile')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -193,32 +192,11 @@
 @endsection
 
 @section('javascript')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 <script type="text/javascript">
-    $(document).ready(function() {
-        toastr.options = {
-            'closeButton': true,
-            'debug': false,
-            'newestOnTop': false,
-            'progressBar': false,
-            'positionClass': 'toast-top-right',
-            'preventDuplicates': false,
-            'showDuration': '1000',
-            'hideDuration': '1000',
-            'timeOut': '5000',
-            'extendedTimeOut': '1000',
-            'showEasing': 'swing',
-            'hideEasing': 'linear',
-            'showMethod': 'fadeIn',
-            'hideMethod': 'fadeOut',
-        }
-    });
     $(function() {
 
         /*------------------------------------------
@@ -300,9 +278,12 @@
         --------------------------------------------
         --------------------------------------------*/
         $('#createNewUser').click(function() {
+            $('#saveBtn').html('Save Changes');
             $('#saveBtn').val("create-user");
             $('#user_id').val('');
             $('#userForm').trigger("reset");
+            $('#preview-image').attr('src', '../images/users/user.png');
+            $(".alert").remove();
             $('#modelHeading').html("Add New User");
             $('#ajaxModel').modal('show');
         });
@@ -316,24 +297,26 @@
             e.preventDefault();
             $(this).html('Sending..');
             var formData = new FormData($(userForm).get(0));
-            //var formData = new FormData(document.getElementById(userForm));
             $.ajax({
-                //data: $('#userForm').serialize(),
                 data: formData,
                 url: "{{ route('users.store') }}",
                 type: "POST",
-                // dataType: 'json',
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    toastr.success(data, 'Deleted');
+                    toastr.success(data, 'User added successfully.');
                     $('#userForm').trigger("reset");
                     $('#ajaxModel').modal('hide');
                     table.draw();
 
                 },
                 error: function(data) {
-                    toastr.error(data);
+                    $(".alert").remove();
+                    var erroJson = JSON.parse(data.responseText);
+                    for (var err in erroJson.errors) {
+                        for (var errstr of erroJson.errors[err])
+                            $("[name='" + err + "']").after("<div class='alert alert-danger'>" + errstr + "</div>");
+                    }
                     console.log('Error:', data);
                     $('#saveBtn').html('Save Changes');
                 }
@@ -348,7 +331,6 @@
         $('body').on('click', '.deleteUser', function() {
             var user_id = $(this).data("id");
             if (confirm("Are you sure, you want to delete the user!")) {
-                alert("hello");
                 $.ajax({
                     type: "DELETE",
                     url: "{{ route('users.store') }}" + '/' + user_id,

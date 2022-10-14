@@ -21,8 +21,8 @@ return new class extends Migration
             $table->decimal('price', $precision = 12, $scale = 2)->nullable();
             $table->string('image')->default('course.png');
             $table->string('path')->nullable;
-            $table->foreignId('mentor');
-            $table->foreign('mentor')->references('id')->on('users');          
+            $table->foreignId('mentor')->nullable();
+            $table->foreign('mentor')->nullable()->references('id')->on('users');          
             $table->timestamps();
         });
     }

@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Yajra\DataTables\DataTables;
 use Illuminate\Validation\Rules;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -68,7 +68,6 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'mobile' => ['nullable', 'numeric', 'digits:10'],
         ]);
-
         if ($request->hasFile('image')) {
             $request->validate([
                 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -83,7 +82,7 @@ class UserController extends Controller
             [
                 'name' => $request->name,
                 'email' => $request->email,
-                'password'  => $request->password,
+                'password' => Hash::make($request->password),
                 'user_type'  => $request->user_type,
                 'mobile'  => $request->mobile,
                 'address'  => $request->address,

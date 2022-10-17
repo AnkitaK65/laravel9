@@ -31,12 +31,15 @@ Route::get('/courses', function () {
     return view('frontend.courses');
 });
 
+require __DIR__.'/auth.php';
+
 Route::get('/dashboard', function () {
     return view('backend.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
-
 Route::resource('users', UserController::class)->middleware(['auth']);
 
 Route::resource('courses', CourseController::class);
+
+Route::get('/change-password', [UserController::class, 'changePassword'])->name('change-password');
+Route::post('/change-password', [UserController::class, 'updatePassword'])->name('update-password');

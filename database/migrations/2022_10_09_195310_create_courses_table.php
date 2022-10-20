@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->set('category', ['Web Developmen', 'Marketing', 'Content'])->nullable();
             $table->decimal('price', $precision = 12, $scale = 2)->nullable();
-            $table->string('image')->default('course.png');
-            $table->string('path')->nullable;
+            $table->string('image')->nullable();
+            $table->string('path')->nullable();
             $table->foreignId('mentor')->nullable();
             $table->foreign('mentor')->nullable()->references('id')->on('users');          
             $table->timestamps();

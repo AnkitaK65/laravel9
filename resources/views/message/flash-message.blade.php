@@ -77,3 +77,15 @@
 </script>
 @endif
 </script>
+
+@if ($errors->any())
+<script type="text/javascript">
+    toastr.error("Please check the form below for errors");
+</script>
+@endif
+
+@if (session('status'))
+<script type="text/javascript">
+    toastr.info("{{ session('status') }}");
+</script>
+@endif

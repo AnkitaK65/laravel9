@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->set('category', ['Web Developmen', 'Marketing', 'Content'])->nullable();
+            $table->set('category', ['Web Development', 'Marketing', 'Content'])->nullable();
             $table->decimal('price', $precision = 12, $scale = 2)->nullable();
             $table->string('image')->nullable();
             $table->string('path')->nullable();

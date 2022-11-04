@@ -51,7 +51,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        if(Auth::user()->user_type == 'admin') {
+            return view('users.add');
+        }
+        return view('message.pages-error-403');
     }
 
     /**
@@ -91,10 +94,21 @@ class UserController extends Controller
             ]
         );
         if ($user) {
-            event(new Registered($user));
-            return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
+            if ($request->ajax()) {
+                event(new Registered($user));
+                return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
+            } else {
+                return redirect()->route('users.create')
+                    ->with('success', 'User added successfully');
+            }
+        } else {
+            if ($request->ajax()) {
+                return response()->json(['status' => 'failed', 'message' => 'Failed! User Details not saved.']);
+            } else {
+                return redirect()->route('users.create')
+                    ->with('failure', 'User creation failed...');
+            }
         }
-        return response()->json(['status' => 'failed', 'message' => 'Failed! User Details not saved.']);
     }
 
     /**

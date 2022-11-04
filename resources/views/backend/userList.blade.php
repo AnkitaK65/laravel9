@@ -19,29 +19,32 @@
 <section class="section">
     <div class="row">
         <div class="col-lg-12">
-            <div class="container">
-                <ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-end mb-4 ">
-                    <a class="btn btn-success float: right" href="javascript:void(0)" id="createNewUser"> Add New User</a>
-                </ul>
-                <table class="table table-bordered data-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>User Type</th>
-                            <th>Mobile</th>
-                            <th>Address</th>
-                            <th>Gender</th>
-                            <th>Image</th>
-                            <th width="280px">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <!-- </div>
-            </div> -->
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-end mb-4 ">
+                        <a class="btn btn-success float: left" href="{{route('users.create')}}"> Add New User via request</a>
+                    </ul>
+                    <ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-end mb-4 ">
+                        <a class="btn btn-success float: right" href="javascript:void(0)" id="createNewUser"> Add New User</a>
+                    </ul>
+                    <table class="table table-bordered data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>User Type</th>
+                                <th>Mobile</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>Image</th>
+                                <th width="280px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal fade" id="ajaxModel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">

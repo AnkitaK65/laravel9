@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\User;
 use Yajra\DataTables\DataTables;
 
 class CourseController extends Controller
@@ -15,6 +16,8 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
+
+        $mentors = User::where('user_type', 'mentor')->latest()->get();
         if ($request->ajax()) {
             $data = Course::latest()->get();
             return DataTables::of($data)
@@ -28,7 +31,7 @@ class CourseController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('backend.courseList');
+        return view('backend.courseList', ['mentors' => $mentors]);
     }
 
     /**
@@ -49,7 +52,40 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        // $request->validate([
+        //     'name' => ['required', 'string', 'max:255'],
+        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        //     'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        //     'mobile' => ['nullable', 'numeric', 'digits:10'],
+        // ]);
+        // if ($request->hasFile('image')) {
+        //     $request->validate([
+        //         'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        //     ]);
+        //     $file = $request->file('image');
+        //     $filename = date('YmdHi') . $file->getClientOriginalName();
+        //     $file->move(public_path('images/users'), $filename);
+        // } else {
+        //     $filename = 'user.png';
+        // }
+        // $user = User::Create(
+        //     [
+        //         'name' => $request->name,
+        //         'email' => $request->email,
+        //         'password' => Hash::make($request->password),
+        //         'user_type'  => $request->user_type,
+        //         'mobile'  => $request->mobile,
+        //         'address'  => $request->address,
+        //         'gender'  => $request->gender,
+        //         'image'  => $filename
+        //     ]
+        // );
+        // if ($user) {
+        //     event(new Registered($user));
+        //     return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
+        // }
+        return response()->json(['status' => 'failed', 'message' => 'Failed! Course Details not saved.']);
     }
 
     /**

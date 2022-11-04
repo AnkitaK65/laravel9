@@ -37,9 +37,13 @@ Route::get('/dashboard', function () {
     return view('backend.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('users', UserController::class)->middleware(['auth']);
+Route::resource('users', UserController::class)->middleware(['auth', 'verified']);
 
-Route::resource('courses', CourseController::class);
+Route::resource('courses', CourseController::class)->middleware(['auth', 'verified']);
 
-Route::get('/change-password', [UserController::class, 'changePassword'])->name('change-password');
-Route::post('/change-password', [UserController::class, 'updatePassword'])->name('update-password');
+Route::get('/change-password', [UserController::class, 'changePassword'])->middleware(['auth', 'verified'])->name('change-password');
+Route::post('/change-password', [UserController::class, 'updatePassword'])->middleware(['auth', 'verified'])->name('update-password');
+
+Route::get('/forbidden', function () {
+    return view('message.pages-error-403');
+});

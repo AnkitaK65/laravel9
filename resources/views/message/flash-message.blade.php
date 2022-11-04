@@ -55,7 +55,7 @@
 
 @if(Session::has('failure'))
 <script type="text/javascript">
-    toastr.success("{{ session('failure') }}");
+    toastr.warning("{{ session('failure') }}");
 </script>
 @endif
 

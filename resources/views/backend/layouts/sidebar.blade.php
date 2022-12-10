@@ -37,6 +37,13 @@
                     <span>Cart</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{route('change-password')}}">
+                    <i class="bi bi-gear"></i>
+                    <span>Change Password</span>
+                </a>
+            </li>
         </ul>
 
     </aside><!-- End Sidebar-->

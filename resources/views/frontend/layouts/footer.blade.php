@@ -86,7 +86,7 @@
 
   <!-- Template Main JS File -->
   <script src="{{ asset('Mentor/assets/js/main.js') }}"></script>
+  @yield('javascript')
+  </body>
 
-</body>
-
-</html>
+  </html>

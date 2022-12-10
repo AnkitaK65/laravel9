@@ -49,22 +49,22 @@
                                 <div class="form-group">
                                     <label for="name" class="col-sm-2 control-label">Title</label>
                                     <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" value="" required="">
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" value="" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="description" class="col-sm-2 control-label">Description</label>
-                                    <div class="quill-editor-full" id="description" name="description">
-                                        
+                                    <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                    <div class="col-sm-12">
+                                        <textarea id="description" name="description" class="form-control" style="height: 100px" required></textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="category" class="col-sm-2 control-label">Category</label>
                                     <div class="col-sm-12">
-                                        <select class="form-select" multiple aria-label="multiple select example" id="category" name="category">
-                                            <option value="" disabled>--Select Category--</option>
+                                        <select class="form-select" aria-label="select example" id="category" name="category" required>
+                                            <option value="" disabled selected>--Select Category--</option>
                                             <option value="Web Development">Web Development</option>
                                             <option value="Marketing">Marketing</option>
                                             <option value="Content">Content</option>
@@ -76,25 +76,31 @@
                                     <label class="col-sm-2 control-label">Price</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">₹</span>
-                                        <input type="text" id="price" name="price" class="form-control">
-                                        <span class="input-group-text">.00</span>
+                                        <input type="text" id="price" name="price" class="form-control" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="image" class="col-sm-2 col-form-label">Image</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="image" name="image">
+                                        <input class="form-control" type="file" id="image" name="image" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <img id="preview-image" src="{{asset('images/users/user.png')}}" alt="preview image" style="max-height: 250px;">
+                                        <img id="preview-image" src="{{ asset('Mentor/assets/img/course-1.jpg') }}" alt="preview image" style="max-height: 250px;">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="path" class="col-sm-2 col-form-label">Path</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="path" name="path">
+                                        <input class="form-control" type="file" id="path" name="path" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="attachment" class="col-sm-2 col-form-label">Attachment</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="file" id="attachment" name="attachment" required>
                                     </div>
                                 </div>
 
@@ -195,6 +201,7 @@
                 $('#price').val(data.price);
                 $('#image').val(data.image);
                 $('#path').val(data.path);
+                $('#attachment').val(data.attachment);
                 $('#mentor').val(data.mentor);
             })
         });
@@ -202,21 +209,27 @@
         $('#saveBtn').click(function(e) {
             e.preventDefault();
             $(this).html('Sending..');
-
+            var formData = new FormData($(courseForm).get(0));
             $.ajax({
-                data: $('#courseForm').serialize(),
+                data: formData,
                 url: "{{ route('courses.store') }}",
                 type: "POST",
-                dataType: 'json',
+                contentType: false,
+                processData: false,
                 success: function(data) {
-
+                    toastr.success(data, 'Course added successfully.');
                     $('#courseForm').trigger("reset");
                     $('#ajaxModel').modal('hide');
                     table.draw();
-
                 },
                 error: function(data) {
                     toastr.error('Something went wrong');
+                    $(".alert").remove();
+                    var erroJson = JSON.parse(data.responseText);
+                    for (var err in erroJson.errors) {
+                        for (var errstr of erroJson.errors[err])
+                            $("[name='" + err + "']").after("<div class='alert alert-danger'>" + errstr + "</div>");
+                    }
                     console.log('Error:', data);
                     $('#saveBtn').html('Save Changes');
                 }

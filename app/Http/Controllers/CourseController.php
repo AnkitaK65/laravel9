@@ -53,38 +53,59 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-        // $request->validate([
-        //     'name' => ['required', 'string', 'max:255'],
-        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        //     'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        //     'mobile' => ['nullable', 'numeric', 'digits:10'],
-        // ]);
-        // if ($request->hasFile('image')) {
-        //     $request->validate([
-        //         'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        //     ]);
-        //     $file = $request->file('image');
-        //     $filename = date('YmdHi') . $file->getClientOriginalName();
-        //     $file->move(public_path('images/users'), $filename);
-        // } else {
-        //     $filename = 'user.png';
-        // }
-        // $user = User::Create(
-        //     [
-        //         'name' => $request->name,
-        //         'email' => $request->email,
-        //         'password' => Hash::make($request->password),
-        //         'user_type'  => $request->user_type,
-        //         'mobile'  => $request->mobile,
-        //         'address'  => $request->address,
-        //         'gender'  => $request->gender,
-        //         'image'  => $filename
-        //     ]
-        // );
-        // if ($user) {
-        //     event(new Registered($user));
-        //     return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
-        // }
+        $request->validate([
+            //'course_id' => ['sometimes', 'numeric'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'category' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'mentor' => ['required', 'numeric'],
+        ]);
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+            $image = $request->file('image');
+            $filename = date('YmdHi') . $image->getClientOriginalName();
+            $image->move(public_path('images/users/' . $request->mentor), $filename);
+        }
+
+        if ($request->hasFile('path')) {
+            $request->validate([
+                'path' => 'required|mimetypes:video/avi,video/mpeg,video/mp4,video/quicktime',
+            ]);
+            $path = $request->file('path');
+            $filename = date('YmdHi') . $path->getClientOriginalName();
+            $path->move(public_path('images/users/' . $request->mentor), $filename);
+        }
+
+        if ($request->hasFile('attachment')) {
+            $request->validate([
+                'attachment' => 'required|mimes:pdf|max:100000',
+            ]);
+            $attachment = $request->file('attachment');
+            $filename = date('YmdHi') . $attachment->getClientOriginalName();
+            $attachment->move(public_path('images/users/' . $request->mentor), $filename);
+        }
+
+        $course = Course::updateOrCreate(
+            [
+                'id' => $request->course_id
+            ],
+            [
+                'title' => $request->title,
+                'description' => $request->description,
+                'category' => $request->category,
+                'price'  => $request->price,
+                'mentor'  => $request->mentor,
+                'image'  => $image,
+                'path'  => $path,
+                'attachment'  => $attachment
+            ]
+        );
+        if ($course) {
+            return response()->json(['status' => 'success', 'message' =>  'Course Details saved successfully.']);
+        }
         return response()->json(['status' => 'failed', 'message' => 'Failed! Course Details not saved.']);
     }
 
@@ -107,7 +128,8 @@ class CourseController extends Controller
      */
     public function edit($id)
     {
-        //
+        $course = Course::find($id);
+        return response()->json($course);
     }
 
     /**
@@ -130,6 +152,7 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Course::find($id)->delete();
+        return response()->json(['status' => 'success', 'message' =>  'Course deleted successfully.']);
     }
 }

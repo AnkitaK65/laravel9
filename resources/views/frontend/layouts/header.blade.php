@@ -8,6 +8,7 @@
   <title>Mentor</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- Favicons -->
   <link href="{{ asset('NiceAdmin/img/favicon.png') }}" rel="icon">
@@ -29,7 +30,7 @@
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('Mentor/assets/css/style.css') }}" rel="stylesheet">
-
+  @yield('css')
   <!-- =======================================================
   * Template Name: Mentor - v4.8.1
   * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/

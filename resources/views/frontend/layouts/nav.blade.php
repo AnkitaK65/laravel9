@@ -29,7 +29,7 @@
                 @endauth
                 <!-- </div> -->
                 @endif
-                <li><a href="/">Contact Us</a></li>
+                <li><a href="/contact-us">Contact Us</a></li>
                 <li><a href="courses"  class="{{ (request()->is('courses')) ? 'active' : '' }}">Courses</a></li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>

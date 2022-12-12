@@ -49,16 +49,20 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <input type="text" name="name" class="form-control" id="name" placeholder="Your Name">
+                                <span id="nameErrorMsg" class="text-danger">{{ $errors->first('name') }}</span>
                             </div>
                             <div class="col-md-6 form-group mt-3 mt-md-0">
                                 <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" >
+                                <span id="emailErrorMsg" class="text-danger">{{ $errors->first('email') }}</span>
                             </div>
                         </div>
                         <div class="form-group mt-3">
                             <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" >
+                            <span id="subjectErrorMsg" class="text-danger">{{ $errors->first('subject') }}</span>
                         </div>
                         <div class="form-group mt-3">
                             <textarea class="form-control" name="message" id="message" rows="5" placeholder="Message" ></textarea>
+                            <span id="messageErrorMsg" class="text-danger">{{ $errors->first('message') }}</span>
                         </div>
                         <div class="my-3">
                             <div id="loadMsg" class="loading">Loading</div>
@@ -108,6 +112,10 @@
         let email = $('#email').val();
         let subject = $('#subject').val();
         let message = $('#message').val();
+        $('#nameErrorMsg').text("");
+        $('#emailErrorMsg').text("");
+        $('#subjectErrorMsg').text("");
+        $('#messageErrorMsg').text("");
 
         $.ajax({
             url: "{{ route('contact.us.store') }}",
@@ -128,6 +136,10 @@
                 y.style.display = "none";
                 $('#successMsg').show();
                 console.log(response);
+                $('#nameErrorMsg').text("");
+                $('#emailErrorMsg').text("");
+                $('#subjectErrorMsg').text("");
+                $('#messageErrorMsg').text("");
             },
             error: function(response) {
                 $('#submitbutton').html('Send Message');
@@ -142,7 +154,15 @@
                 // $('#subjectErrorMsg').text(response.responseJSON.errors.subject);
                 // $('#messageErrorMsg').text(response.responseJSON.errors.message);
                 //var msg = response.responseJSON.errors;
+                
                 var msg = err.errors;
+
+                $('#nameErrorMsg').text(msg.name);
+                $('#emailErrorMsg').text(msg.email);
+                $('#subjectErrorMsg').text(msg.subject);
+                $('#messageErrorMsg').text(msg.message);
+
+
                 var errorString = '<ul>';
                 $.each(msg, function(key, value) {
                     errorString += '<li>' + value + '</li>';

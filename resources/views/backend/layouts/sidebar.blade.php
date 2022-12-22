@@ -44,6 +44,16 @@
                     <span>Change Password</span>
                 </a>
             </li>
+
+            @if(Auth::user()->user_type == 'admin' || Auth::user()->user_type == 'user')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('enquiries') ? '' : 'collapsed' }}" href="{{url('enquiries')}}">
+                    <i class="bi bi-question-circle"></i>
+                    <span>Enquiries</span>
+                </a>
+            </li>
+            @endif
+
         </ul>
 
     </aside><!-- End Sidebar-->

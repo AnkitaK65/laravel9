@@ -51,3 +51,5 @@ Route::get('/forbidden', function () {
 
 Route::get('contact-us', [ContactController::class, 'index']);
 Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us.store');
+
+Route::get('enquiries', [ContactController::class, 'show_all'])->middleware(['auth', 'verified']);

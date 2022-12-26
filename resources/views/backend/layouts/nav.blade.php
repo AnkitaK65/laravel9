@@ -3,7 +3,11 @@
         <li class="nav-item dropdown pe-3">
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                <img src="{{ asset('NiceAdmin/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
+                @if(Auth::user()->image)
+                <img src="{{ asset('images/users/'.Auth::user()->id.'/'.Auth::user()->image) }}" alt="Profile" class="rounded-circle">
+                @else
+                <img src="{{ asset('images/users/user.png') }}" alt="Profile" class="rounded-circle">
+                @endif
                 <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->name }}</span>
             </a><!-- End Profile Iamge Icon -->
 

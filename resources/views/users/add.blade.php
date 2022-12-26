@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <br>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -73,6 +73,7 @@
                                 </div>
                             </div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -112,6 +113,7 @@
                                 </div>
                             </div>
                         </div>
+                        <br>
                         <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">Address</label>
                             <div class="col-sm-12">
@@ -123,6 +125,7 @@
                                 @enderror
                             </div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -139,6 +142,22 @@
                             </div>
                             <div class="col-md-6">
                                 <img id="preview-image" src="{{asset('images/users/user.png')}}" alt="preview image" style="max-height: 250px;">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">CV</label>
+                                    <div class="col-sm-12">
+                                        <input type="file" name="cv" class="form-control @error('cv') is-invalid @enderror" id="cv">
+                                        @error('cv')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                         </div>
                 </div>

@@ -69,6 +69,9 @@
                             </div>
                         </div>
                         @endforeach
+                        @if($enquiries->count()<=0)
+                        <h6>No Enquiries associated with this email address.</h6>
+                        @endif
                     </div>
                 </div>
             </div>

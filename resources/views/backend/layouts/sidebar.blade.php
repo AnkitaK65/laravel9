@@ -16,13 +16,14 @@
                     <span>Profile</span>
                 </a>
             </li><!-- End Profile Page Nav -->
-
+            @if(Auth::user()->user_type == 'admin')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{route('users.index')}}">
                     <i class="bi bi-card-list"></i>
                     <span>Users</span>
                 </a>
-            </li><!-- End Register Page Nav -->
+            </li>
+            @endif
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{route('courses.index')}}">

@@ -55,6 +55,7 @@
                                 </div>
                             </div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -91,13 +92,14 @@
                                     <div class="col-sm-12">
                                         <select id="gender" name="gender" class="form-select">
                                             <option value="">--select--</option>
-                                            <option  @if ($user->gender === 'male' || old('gender') === 'user') selected @endif value="male">Male</option>
-                                            <option  @if ($user->gender === 'female' || old('gender') === 'user') selected @endif value="female">Female</option>
+                                            <option @if ($user->gender === 'male' || old('gender') === 'user') selected @endif value="male">Male</option>
+                                            <option @if ($user->gender === 'female' || old('gender') === 'user') selected @endif value="female">Female</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br>
                         <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">Address</label>
                             <div class="col-sm-12">
@@ -109,6 +111,7 @@
                                 @enderror
                             </div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -124,7 +127,43 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img id="preview-image" src="{{asset('images/users/'.$user->image)}}" alt="preview image" style="max-height: 250px;">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">CV</label>
+                                    <div class="col-sm-12">
+                                        <input type="file" name="cv" class="form-control @error('cv') is-invalid @enderror" id="cv">
+                                        @error('cv')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        @if($user->image)
+                                        <img id="preview-image" src="{{asset('images/users/'.$user->id.'/'.$user->image)}}" alt="preview image" style="max-height: 250px;">
+                                        @else
+                                        <img id="preview-image" src="{{ asset('images/users/user.png') }}" alt="preview image" style="max-height: 250px;">
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        @if($user->cv)
+                                        <a class="btn btn-primary" href="{{asset('images/users/'.$user->id.'/'.$user->cv)}}" download>
+                                            Download CV
+                                        </a>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                 </div>

@@ -18,7 +18,8 @@ return new class extends Migration
             $table->bigInteger('mobile')->after('user_type')->nullable();
             $table->string('address')->after('mobile')->nullable();
             $table->enum('gender', ['male', 'female'])->after('address')->nullable();
-            $table->string('image')->after('gender')->default('user.png');
+            $table->string('image')->after('gender')->nullable();
+            $table->string('cv')->after('image')->nullable();
         });
     }
 
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->dropColumn('address');
             $table->dropColumn('gender');
             $table->dropColumn('image');
+            $table->dropColumn('cv');
         });
     }
 };

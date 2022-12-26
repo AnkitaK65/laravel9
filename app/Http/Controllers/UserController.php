@@ -20,28 +20,37 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
+        if (Auth::user()->user_type == 'admin') {
+            if ($request->ajax()) {
 
-            $data = User::latest()->get();
+                $data = User::latest()->get();
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('image', function ($row) {
-                    $url = asset('images/users/' . $row->image);
-                    return '<img src="' . $url . '" border="0" width="40" class="img-rounded" align="center" />';
-                })
-                ->addColumn('action', function ($row) {
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('image', function ($row) {
+                        if ($row->image) {
+                            $url = asset('images/users/' . $row->id . '/' . $row->image);
+                        } else {
+                            $url = asset('images/users/user.png');
+                        }
 
-                    $btn = '<a href="' . route('users.edit', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
-                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
-                    $btn = $btn . ' <a href="' . route('users.show', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="View" class="btn btn-info btn-sm viewUser">View</a>';
-                    return $btn;
-                })
-                ->rawColumns(['image', 'action'])
-                ->make(true);
+                        return '<img src="' . $url . '" border="0" width="40" class="img-rounded" align="center" />';
+                    })
+                    ->addColumn('action', function ($row) {
+
+                        $btn = '<a href="' . route('users.edit', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editUser">Edit</a>';
+                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteUser">Delete</a>';
+                        $btn = $btn . ' <a href="' . route('users.show', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="View" class="btn btn-info btn-sm viewUser">View</a>';
+                        return $btn;
+                    })
+                    ->rawColumns(['image', 'action'])
+                    ->make(true);
+            }
+
+            return view('backend.userList');
+        } else {
+            return view('message.pages-error-403');
         }
-
-        return view('backend.userList');
     }
 
     /**
@@ -51,7 +60,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        if(Auth::user()->user_type == 'admin') {
+        if (Auth::user()->user_type == 'admin') {
             return view('users.add');
         }
         return view('message.pages-error-403');
@@ -71,16 +80,6 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'mobile' => ['nullable', 'numeric', 'digits:10'],
         ]);
-        if ($request->hasFile('image')) {
-            $request->validate([
-                'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            ]);
-            $file = $request->file('image');
-            $filename = date('YmdHi') . $file->getClientOriginalName();
-            $file->move(public_path('images/users'), $filename);
-        } else {
-            $filename = 'user.png';
-        }
         $user = User::Create(
             [
                 'name' => $request->name,
@@ -89,11 +88,33 @@ class UserController extends Controller
                 'user_type'  => $request->user_type,
                 'mobile'  => $request->mobile,
                 'address'  => $request->address,
-                'gender'  => $request->gender,
-                'image'  => $filename
+                'gender'  => $request->gender
             ]
         );
         if ($user) {
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                ]);
+                $file = $request->file('image');
+                $filename = $file->getClientOriginalName();
+                $file->move(public_path('images/users/' . $user->id), $filename);
+            } else {
+                $filename = null;
+            }
+            if ($request->hasFile('cv')) {
+                $request->validate([
+                    'cv' => 'required|mimes:pdf|max:10000',
+                ]);
+                $file = $request->file('cv');
+                $cv = $file->getClientOriginalName();
+                $file->move(public_path('images/users/' . $user->id), $cv);
+            } else {
+                $cv = null;
+            }
+            $user->image = $filename;
+            $user->cv = $cv;
+            $user->save();
             if ($request->ajax()) {
                 event(new Registered($user));
                 return response()->json(['status' => 'success', 'message' =>  'User Details saved successfully.']);
@@ -120,7 +141,10 @@ class UserController extends Controller
     public function show(User $user)
     {
         //dd($user);
-        return view('users.show', compact('user'));
+        if (Auth::user()->user_type == 'admin' || Auth::user()->id == $user->id) {
+            return view('users.show', compact('user'));
+        }
+        return view('message.pages-error-403');
     }
 
     /**
@@ -131,7 +155,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        if (Auth::user()->user_type == 'admin' || Auth::user()->id == $user->id) {
+            return view('users.edit', compact('user'));
+        }
+        return view('message.pages-error-403');
     }
 
     /**
@@ -158,11 +185,21 @@ class UserController extends Controller
                 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             ]);
             $file = $request->file('image');
-            $filename = date('YmdHi') . $file->getClientOriginalName();
-            $file->move(public_path('images/users'), $filename);
+            //$filename = date('YmdHi') . $file->getClientOriginalName();
+            $filename = $file->getClientOriginalName();
+            $file->move(public_path('images/users/' . $id), $filename);
             $user->image = $filename;
             // $path = $request->file('image')->store('images/users');
             // $user->image = $path;
+        }
+        if ($request->hasFile('cv')) {
+            $request->validate([
+                'cv' => 'required|mimes:pdf|max:10000',
+            ]);
+            $file = $request->file('cv');
+            $filename = $file->getClientOriginalName();
+            $file->move(public_path('images/users/' . $id), $filename);
+            $user->cv = $filename;
         }
         $user->name = $request->name;
         $user->email = $request->email;

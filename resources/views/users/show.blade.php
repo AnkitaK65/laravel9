@@ -66,7 +66,12 @@
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-body text-center">
-                    <img id="myImg" src="{{asset('images/users/'.$user->image)}}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                    @if($user->image)
+                    <img id="myImg" src="{{asset('images/users/'.$user->id.'/'.$user->image)}}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                    @else
+                    <img id="myImg" src="{{ asset('images/users/user.png') }}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                    @endif
+
                     <h5 class="my-3">{{$user->name}}</h5>
                     <p class="text-muted mb-1">{{ucfirst(trans($user->user_type))}}</p>
                     <div class="d-flex justify-content-center mb-2">
@@ -131,6 +136,17 @@
                             <p class="text-muted mb-0">{{$user->address}}</p>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">CV</p>
+                        </div>
+                        <div class="col-sm-9">
+                            @if($user->cv)
+                            <a class="btn btn-link" href="{{asset('images/users/'.$user->id.'/'.$user->cv)}}" download>Download CV</a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,19 +163,19 @@
 
 @section('javascript')
 <script>
-    $(function () {
-    "use strict";
-    var img = document.getElementById("myImg");
-    $(img).click(function () {
-        var $src = $(this).attr("src");
-        $(".show").fadeIn();
-        $(".img-show img").attr("src", $src);
+    $(function() {
+        "use strict";
+        var img = document.getElementById("myImg");
+        $(img).click(function() {
+            var $src = $(this).attr("src");
+            $(".show").fadeIn();
+            $(".img-show img").attr("src", $src);
+        });
+
+        $("span, .overlay").click(function() {
+            $(".show").fadeOut();
+        });
+
     });
-    
-    $("span, .overlay").click(function () {
-        $(".show").fadeOut();
-    });
-    
-});
 </script>
 @stop

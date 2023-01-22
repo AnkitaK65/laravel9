@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DropdownController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,7 @@ Route::get('contact-us', [ContactController::class, 'index']);
 Route::post('contact-us', [ContactController::class, 'store'])->name('contact.us.store');
 
 Route::get('enquiries', [ContactController::class, 'show_all'])->middleware(['auth', 'verified']);
+
+Route::get('dependent-dropdown', [DropdownController::class, 'index'])->middleware(['auth', 'verified']);
+Route::post('api/fetch-states', [DropdownController::class, 'fetchState'])->middleware(['auth', 'verified']);
+Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity'])->middleware(['auth', 'verified']);
